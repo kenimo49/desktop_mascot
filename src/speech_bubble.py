@@ -1,7 +1,6 @@
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget, QLineEdit, QHBoxLayout
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget, QLineEdit
 from PyQt6.QtGui import QPixmap, QPainter, QColor, QPolygon, QFont
 from PyQt6.QtCore import Qt, QPoint, QSize
-
 
 class SpeechBubble(QWidget):
     def __init__(self, text, image_path=None, parent=None):
@@ -15,28 +14,29 @@ class SpeechBubble(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
-        # テキストと画像のコンテナ
-        text_image_layout = QHBoxLayout()
-        self.layout.addLayout(text_image_layout)
+        # テキストの表示
+        self.text_label = QLabel(self.text, self)
+        font = QFont("Arial", 10)
+        self.text_label.setFont(font)
+        self.layout.addWidget(self.text_label)
 
         # 画像が指定されている場合、QLabelで表示
         if self.image_path:
             self.image_label = QLabel(self)
             pixmap = QPixmap(self.image_path)
+            # 画像サイズを調整（必要に応じて調整）
+            max_image_size = (300, 300)  # 最大サイズを指定
+            pixmap = pixmap.scaled(max_image_size[0], max_image_size[1], aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
             self.image_label.setPixmap(pixmap)
-            text_image_layout.addWidget(self.image_label)
-
-        # テキストの表示
-        self.text_label = QLabel(self.text, self)
-        font = QFont("Arial", 10)
-        self.text_label.setFont(font)
-        text_image_layout.addWidget(self.text_label)
+            self.layout.addWidget(self.image_label)
 
         # 入力ボックスを追加
         self.input_box = QLineEdit(self)
         self.input_box.setPlaceholderText("メッセージを入力してください...")
         self.input_box.returnPressed.connect(self.handle_input)
         self.layout.addWidget(self.input_box)
+
+        # サイズ調整
         self.adjustSize()
 
     def handle_input(self):
@@ -45,18 +45,16 @@ class SpeechBubble(QWidget):
         self.input_box.clear()
         # 入力内容に応じて応答を設定
         if input_text == "おはよう":
-            self.text = "おはようございます"
+            self.text_label.setText("おはようございます")
         else:
-            self.text = f"あなたは「{input_text}」と入力しました。"
+            self.text_label.setText(f"あなたは「{input_text}」と入力しました。")
 
         # 吹き出しを再描画して応答を表示
         self.update()
 
     def sizeHint(self):
-        padding = 10
-        triangle_height = 10
-        # return QSize(self.text_width + padding * 2, self.text_height + padding * 2 + triangle_height)
-        return QSize(300, 150)  # ウィジェットのサイズを設定
+        # 吹き出しのサイズをテキストと画像、入力ボックスに基づいて設定
+        return QSize(300, 300)  # ウィジェットのサイズを設定
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -77,10 +75,3 @@ class SpeechBubble(QWidget):
                              QPoint(rect.width() // 2, rect.height())])
         painter.drawPolygon(triangle)
 
-        # テキストの描画
-        painter.setPen(Qt.GlobalColor.black)
-        font = QFont("Arial", 10)
-        painter.setFont(font)
-        # painter.drawText(rect.adjusted(5, 5, -5, -20), Qt.AlignmentFlag.AlignCenter, self.text)
-        painter.drawText(rect.adjusted(10, 10, -10, -(rect.height() - self.input_box.height() - 20)),
-                         Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignTop, self.text)

@@ -5,11 +5,7 @@ from src.database.models.tweet_model import Tweet
 def seed_tweets():
     # 初期データの定義
     initial_tweets = [
-        Tweet(title="初めてのツイート", content="これは最初のツイートです"),
-        Tweet(title="Python学習", content="Pythonは楽しいですね！"),
-        Tweet(title="ランチタイム", content="今日はカレーを食べました。"),
-        Tweet(title="仕事終了", content="今日は疲れた..."),
-        Tweet(title="映画鑑賞", content="最近のおすすめ映画は何ですか？")
+        Tweet(title="文章力アップ", content="文章力を30点から70点に引き上げてくれる本", image_url="image/tweet/文章力UP.jfif"),
     ]
 
     # データベースに初期データを挿入
