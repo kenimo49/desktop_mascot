@@ -1,6 +1,8 @@
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget, QLineEdit
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget, QLineEdit, QPushButton, QHBoxLayout
 from PyQt6.QtGui import QPixmap, QPainter, QColor, QPolygon, QFont
 from PyQt6.QtCore import Qt, QPoint, QSize
+from src.dialog.image_dialog import ImageDialog
+
 
 class SpeechBubble(QWidget):
     def __init__(self, text, image_path=None, parent=None):
@@ -14,11 +16,22 @@ class SpeechBubble(QWidget):
         self.layout = QVBoxLayout(self)
         self.setLayout(self.layout)
 
+        # 閉じるボタンを追加
+        close_button = QPushButton("×", self)
+        close_button.setFixedSize(20, 20)
+        close_button.clicked.connect(self.close)
+
         # テキストの表示
         self.text_label = QLabel(self.text, self)
         font = QFont("Arial", 10)
         self.text_label.setFont(font)
-        self.layout.addWidget(self.text_label)
+
+        # テキストと閉じるボタンを同じ行に配置
+        top_layout = QHBoxLayout()
+        top_layout.addWidget(self.text_label)
+        top_layout.addStretch(1)  # 右揃えのためにスペーサーを追加
+        top_layout.addWidget(close_button)
+        self.layout.addLayout(top_layout)
 
         # 画像が指定されている場合、QLabelで表示
         if self.image_path:
@@ -28,6 +41,7 @@ class SpeechBubble(QWidget):
             max_image_size = (300, 300)  # 最大サイズを指定
             pixmap = pixmap.scaled(max_image_size[0], max_image_size[1], aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
             self.image_label.setPixmap(pixmap)
+            self.image_label.mousePressEvent = self.show_image_dialog  # 画像クリックで拡大表示
             self.layout.addWidget(self.image_label)
 
         # 入力ボックスを追加
@@ -38,6 +52,11 @@ class SpeechBubble(QWidget):
 
         # サイズ調整
         self.adjustSize()
+
+    def show_image_dialog(self, event):
+        if self.image_path:
+            dialog = ImageDialog(self.image_path, text=self.text, parent=self)
+            dialog.exec()
 
     def handle_input(self):
         # 入力されたテキストを取得
@@ -74,4 +93,3 @@ class SpeechBubble(QWidget):
                              QPoint(rect.width() // 2 + 5, rect.height() - 15),
                              QPoint(rect.width() // 2, rect.height())])
         painter.drawPolygon(triangle)
-

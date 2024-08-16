@@ -1,5 +1,5 @@
 from PyQt6.QtCore import QTimer
-from src.speech_bubble import SpeechBubble
+from src.dialog.speech_bubble import SpeechBubble
 
 
 def init_profile(mascot):
