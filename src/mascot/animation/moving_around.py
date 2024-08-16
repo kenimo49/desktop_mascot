@@ -1,10 +1,19 @@
 from PyQt6.QtCore import QPropertyAnimation, QEasingCurve, QPoint
 
+
+def init_moving_around(mascot):
+    print("init_moving_around")
+    # 右回りに動くためのアニメーション
+    mascot.is_moving = False  # 動作中かどうかを示すフラグを追加
+    mascot.movement_animation = QPropertyAnimation(mascot, b"pos")
+
+
 def start_moving_around(mascot):
     print("start_moving_around")
     if not mascot.is_moving:  # すでに動作中でない場合のみ開始
         mascot.is_moving = True
         move_left(mascot)
+
 
 def animate_move(mascot, target_x, target_y, next_move_callback):
     print("animate_move")
@@ -22,26 +31,31 @@ def animate_move(mascot, target_x, target_y, next_move_callback):
     mascot.movement_animation.finished.connect(next_move_callback)
     mascot.movement_animation.start()
 
+
 def move_right(mascot):
     print("move_right")
     target_x = mascot.screen_width - mascot.width()
     target_y = mascot.y()
     animate_move(mascot, target_x, target_y, lambda: move_down(mascot))
 
+
 def move_down(mascot):
     target_x = mascot.x()
     target_y = mascot.screen_height - mascot.height()
     animate_move(mascot, target_x, target_y, lambda: move_left(mascot))
+
 
 def move_left(mascot):
     target_x = 0
     target_y = mascot.y()
     animate_move(mascot, target_x, target_y, lambda: move_up(mascot))
 
+
 def move_up(mascot):
     target_x = mascot.x()
     target_y = 0
     animate_move(mascot, target_x, target_y, lambda: stop_moving_around(mascot))
+
 
 def stop_moving_around(mascot):
     print("stop_moving_around")
