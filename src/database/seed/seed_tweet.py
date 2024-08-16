@@ -13,7 +13,9 @@ def seed_tweets():
     tweet3 = Tweet(title="chatGPT改善", content="AIの頭を良くする天才プロンプト6選")
     tweet3.set_images(["image/tweet/chatGPT改善1.jfif", "image/tweet/chatGPT改善2.jfif", "image/tweet/chatGPT改善3.jfif"])
 
+    tweet4 = Tweet(title="AIマンガ", content="Anifusionを使ってみてください")
+
     # データベースに初期データを挿入
-    session.bulk_save_objects([tweet, tweet2, tweet3])
+    session.bulk_save_objects([tweet, tweet2, tweet3, tweet4])
     session.commit()
 
