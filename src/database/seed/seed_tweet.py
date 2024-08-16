@@ -15,7 +15,10 @@ def seed_tweets():
 
     tweet4 = Tweet(title="AIマンガ", content="Anifusionを使ってみてください")
 
+    tweet5 = Tweet(title="集中力", content="集中力を30秒で取り戻す脳ハック")
+    tweet5.set_images(["image/tweet/集中力回復.jfif"])
+
     # データベースに初期データを挿入
-    session.bulk_save_objects([tweet, tweet2, tweet3, tweet4])
+    session.bulk_save_objects([tweet, tweet2, tweet3, tweet4, tweet5])
     session.commit()
 

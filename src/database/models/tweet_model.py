@@ -4,6 +4,7 @@ from src.database.base import Base
 
 
 class Tweet(Base):
+    # つぶやきの情報を管理するテーブル
     __tablename__ = 'tweet'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
