@@ -1,5 +1,5 @@
-from src.database.init import session
-from src.database.models import Tweet
+from src.database import session
+from src.database.models.tweet_model import Tweet
 
 
 # データベースに新しいTweetを作成する関数
