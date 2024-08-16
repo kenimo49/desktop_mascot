@@ -5,13 +5,13 @@ from src.database import session
 from src.database.models.tweet_model import Tweet
 
 
-def talk(mascot, message, image_path, close_timeout: int = 0):
+def talk(mascot, message, image_paths=None, close_timeout: int = 0):
     # 既存の吹き出しがあれば削除
     if mascot.speech_bubble:
         mascot.speech_bubble.close()
 
     # カスタム吹き出しの作成
-    mascot.speech_bubble = SpeechBubble(message, image_path)
+    mascot.speech_bubble = SpeechBubble(message, image_paths)
 
     # 吹き出しの位置を調整
     bubble_x = mascot.x() + mascot.width() // 2 - mascot.speech_bubble.width() // 2
@@ -29,5 +29,5 @@ def auto_talk(mascot):
     query_result = session.query(Tweet).all()
     # ランダムにメッセージを選択して吹き出しに表示
     message = random.choice(query_result)
-    image_path = message.image_url
-    talk(mascot, message.content, image_path, close_timeout=5000)
+    image_paths = message.get_images()
+    talk(mascot, message.content, image_paths, close_timeout=5000)

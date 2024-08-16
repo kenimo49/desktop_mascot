@@ -5,10 +5,10 @@ from src.dialog.image_dialog import ImageDialog
 
 
 class SpeechBubble(QWidget):
-    def __init__(self, text, image_path=None, parent=None):
+    def __init__(self, text, image_paths=None, parent=None):
         super().__init__(parent)
         self.text = text
-        self.image_path = image_path
+        self.image_paths = image_paths if image_paths is not None else []
         self.setWindowFlags(Qt.WindowType.FramelessWindowHint | Qt.WindowType.WindowStaysOnTopHint)
         self.setAttribute(Qt.WidgetAttribute.WA_TranslucentBackground)
 
@@ -33,16 +33,16 @@ class SpeechBubble(QWidget):
         top_layout.addWidget(close_button)
         self.layout.addLayout(top_layout)
 
-        # 画像が指定されている場合、QLabelで表示
-        if self.image_path:
-            self.image_label = QLabel(self)
-            pixmap = QPixmap(self.image_path)
+        # 複数の画像を表示
+        for image_path in self.image_paths:
+            image_label = QLabel(self)
+            pixmap = QPixmap(image_path)
             # 画像サイズを調整（必要に応じて調整）
             max_image_size = (300, 300)  # 最大サイズを指定
             pixmap = pixmap.scaled(max_image_size[0], max_image_size[1], aspectRatioMode=Qt.AspectRatioMode.KeepAspectRatio)
-            self.image_label.setPixmap(pixmap)
-            self.image_label.mousePressEvent = self.show_image_dialog  # 画像クリックで拡大表示
-            self.layout.addWidget(self.image_label)
+            image_label.setPixmap(pixmap)
+            image_label.mousePressEvent = lambda event, path=image_path: self.show_image_dialog(path)  # 画像クリックで拡大表示
+            self.layout.addWidget(image_label)
 
         # 入力ボックスを追加
         self.input_box = QLineEdit(self)
@@ -53,9 +53,9 @@ class SpeechBubble(QWidget):
         # サイズ調整
         self.adjustSize()
 
-    def show_image_dialog(self, event):
-        if self.image_path:
-            dialog = ImageDialog(self.image_path, text=self.text, parent=self)
+    def show_image_dialog(self, image_path):
+        if image_path:
+            dialog = ImageDialog(image_path, text=self.text, parent=self)
             dialog.exec()
 
     def handle_input(self):

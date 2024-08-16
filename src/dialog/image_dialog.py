@@ -1,6 +1,6 @@
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget, QLineEdit, QDialog
-from PyQt6.QtGui import QPixmap, QPainter, QColor, QPolygon, QFont
-from PyQt6.QtCore import Qt, QPoint, QSize
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QDialog
+from PyQt6.QtGui import QPixmap, QFont
+from PyQt6.QtCore import Qt, QSize
 
 
 class ImageDialog(QDialog):
