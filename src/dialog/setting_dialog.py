@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QComboBox, QPushButton
 from src.database import session
 from src.database.enums.timer_name import TimerName
 from src.database.models.timer_setting import TimerSettings
+from src.mascot.timers import update_timer_intervals
 
 
 class SettingsDialog(QDialog):
@@ -57,10 +58,10 @@ class SettingsDialog(QDialog):
 
         # 保存ボタン
         save_button = QPushButton("保存", self)
-        save_button.clicked.connect(self.save_settings)
+        save_button.clicked.connect(lambda: self.save_settings(parent))
         layout.addWidget(save_button)
 
-    def save_settings(self):
+    def save_settings(self, parent=None):
         # コンボボックスの値を取得してデータベースに保存
         for timer_name, combo_box in self.timer_combo_boxes.items():
             interval = combo_box.currentData()
@@ -73,4 +74,6 @@ class SettingsDialog(QDialog):
                 session.add(new_setting)
 
         session.commit()
+        update_timer_intervals(parent)
         self.accept()  # ダイアログを閉じる
+

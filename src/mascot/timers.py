@@ -22,15 +22,33 @@ def setup_timers(mascot):
         update_timer.start(update_timer_interval)  # データベースから取得した間隔で更新
 
     # 自動で吹き出しを表示するタイマー
-    auto_talk_timer = QTimer(mascot)
+    mascot.auto_talk_timer = QTimer(mascot)
     if auto_talk_timer_setting and auto_talk_timer_setting.interval > 0:
-        auto_talk_timer.timeout.connect(lambda: auto_talk(mascot))
-        auto_talk_timer.start(auto_talk_timer_setting.interval)
+        mascot.auto_talk_timer.timeout.connect(lambda: auto_talk(mascot))
+        mascot.auto_talk_timer.start(auto_talk_timer_setting.interval)
 
     # 動き回るタイマー
-    move_timer = QTimer(mascot)
+    mascot.move_timer = QTimer(mascot)
     if move_timer_setting and move_timer_setting.interval > 0:
-        move_timer.timeout.connect(lambda: start_moving_around(mascot))
-        move_timer.start(move_timer_setting.interval)
+        mascot.move_timer.timeout.connect(lambda: start_moving_around(mascot))
+        mascot.move_timer.start(move_timer_setting.interval)
 
-    return update_timer, auto_talk_timer, move_timer
+    return update_timer, mascot.auto_talk_timer, mascot.move_timer
+
+
+def update_timer_intervals(mascot):
+    # 現在のタイマーを停止してリセット
+    if mascot.auto_talk_timer.isActive():
+        mascot.auto_talk_timer.stop()
+    if mascot.move_timer.isActive():
+        mascot.move_timer.stop()
+
+    # 新しい設定を取得して再設定
+    auto_talk_timer_setting = session.query(TimerSettings).filter_by(name=TimerName.AUTO_TALK_TIMER).first()
+    move_timer_setting = session.query(TimerSettings).filter_by(name=TimerName.MOVE_TIMER).first()
+
+    if auto_talk_timer_setting and auto_talk_timer_setting.interval > 0:
+        mascot.auto_talk_timer.start(auto_talk_timer_setting.interval)
+
+    if move_timer_setting and move_timer_setting.interval > 0:
+        mascot.move_timer.start(move_timer_setting.interval)
