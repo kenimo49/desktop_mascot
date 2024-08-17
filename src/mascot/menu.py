@@ -8,6 +8,7 @@ from src.database.models.tweet_model import Tweet
 from src.dialog.add_tweet_dialog import AddTweetDialog
 from PyQt6.QtWidgets import QMenu, QWidgetAction, QLabel, QWidget, QVBoxLayout, QMessageBox
 from src.dialog.setting_dialog import SettingsDialog
+from src.database.controller.keylogger_setting import set_keylogger_status
 
 
 MENU_STYLE = """
@@ -65,6 +66,14 @@ def show_context_menu(mascot, position):
     animation_action.triggered.connect(lambda: start_moving_around(mascot))
     animation_menu.addAction(animation_action)
 
+    # キーロガーON/OFFアクションを作成
+    keylogger_action = QAction("キーロガーを有効にする", mascot)
+    keylogger_action.setCheckable(True)
+    keylogger_action.setChecked(mascot.is_keylogger_active)
+    keylogger_action.triggered.connect(lambda: toggle_keylogger(mascot, keylogger_action))
+
+    menu.addAction(keylogger_action)
+
     # 「つぶやき」サブメニューを作成
     tweet_menu = menu.addMenu("つぶやき")
 
@@ -106,6 +115,18 @@ def show_context_menu(mascot, position):
 
     # メニューを表示
     menu.exec(mascot.mapToGlobal(position))
+
+
+def toggle_keylogger(mascot, action):
+    if action.isChecked():
+        mascot.is_keylogger_active = True
+        action.setText("キーロガーを無効にする")
+        set_keylogger_status(True)  # データベースに状態を保存
+    else:
+        mascot.is_keylogger_active = False
+        # リスナーを停止する場合はその処理を追加
+        action.setText("キーロガーを有効にする")
+        set_keylogger_status(False)  #
 
 
 def add_tweet(mascot):

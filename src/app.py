@@ -7,6 +7,7 @@ from src.database.seed import run_all_seeds
 from src.database.controller.system_status import is_initialized, set_initialized
 from pynput import keyboard  # キーボードリスナーのインポート
 from src.logging.key_logger import KeyLogger  # キーロガーの実装部分をインポート
+from src.database.controller.keylogger_setting import get_keylogger_status
 
 
 if __name__ == "__main__":
@@ -20,8 +21,11 @@ if __name__ == "__main__":
         # 初期化済みフラグを設定
         set_initialized()
 
-    # キーボードリスナーの初期化と開始
-    listener = KeyLogger.start()
+    is_keylogger_active = get_keylogger_status()
+    listener = None
+    if is_keylogger_active:
+        # キーボードリスナーの初期化と開始
+        listener = KeyLogger.start()
 
     app = QApplication(sys.argv)
     # アプリケーションのアイコンを設定
@@ -31,4 +35,5 @@ if __name__ == "__main__":
     try:
         sys.exit(app.exec())
     finally:
-        listener.stop()  # アプリケーション終了時にリスナーを停止
+        if listener:
+            listener.stop()  # アプリケーション終了時にリスナーを停止
