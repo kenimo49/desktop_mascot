@@ -1,4 +1,3 @@
-from PyQt6.QtWidgets import QMenu
 from src.mascot.talk import auto_talk, talk
 from src.mascot.animation.moving_around import start_moving_around
 from PyQt6.QtGui import QAction
@@ -8,6 +7,8 @@ from src.database import session
 from src.database.models.tweet_model import Tweet
 from src.dialog.add_tweet_dialog import AddTweetDialog
 from PyQt6.QtWidgets import QMenu, QWidgetAction, QLabel, QWidget, QVBoxLayout, QMessageBox
+from src.dialog.setting_dialog import SettingsDialog
+
 
 MENU_STYLE = """
         QMenu {
@@ -48,6 +49,11 @@ def show_context_menu(mascot, position):
     # レベル表示用のアクションを作成
     level_action = QAction(f"レベル: {mascot.level}", mascot)
     level_action.triggered.connect(lambda: show_level(mascot))
+
+    # 「設定」アクションを作成
+    settings_action = QAction("設定", mascot)
+    settings_action.triggered.connect(lambda: show_settings_dialog(mascot))
+    menu.addAction(settings_action)
 
     # 「話す」アクションを作成
     talk_action = QAction("話す", mascot)
@@ -107,6 +113,11 @@ def add_tweet(mascot):
     if dialog.exec():
         # ダイアログで追加された後の処理（必要なら）
         pass
+
+
+def show_settings_dialog(mascot):
+    dialog = SettingsDialog(mascot)
+    dialog.exec()
 
 
 def delete_tweet(mascot, tweet):
