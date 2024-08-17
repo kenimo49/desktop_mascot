@@ -3,7 +3,7 @@ from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 
 
-def setup_display(mascot, window_title="Animated Mascot", window_size=(340, 370), image_path="image/character02.png"):
+def setup_display(mascot, window_title="Animated Mascot", window_size=(340, 370), image_path="image/shiro/default_shiro.png"):
     # ディスプレイの基本設定
     mascot.setWindowTitle(window_title)
     mascot.setGeometry(100, 100, *window_size)  # ウィンドウサイズを画像サイズに合わせる
@@ -19,6 +19,6 @@ def setup_display(mascot, window_title="Animated Mascot", window_size=(340, 370)
 
     # 画面サイズを取得し、ウィンドウを右下に配置
     screen_geometry = mascot.screen().availableGeometry()
-    screen_width = screen_geometry.width()
-    screen_height = screen_geometry.height()
-    mascot.move(screen_width - mascot.width(), screen_height - mascot.height())
+    mascot.screen_width = screen_geometry.width()
+    mascot.screen_height = screen_geometry.height()
+    mascot.move(mascot.screen_width - mascot.width(), mascot.screen_height - mascot.height())

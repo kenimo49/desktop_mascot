@@ -1,4 +1,6 @@
 from PyQt6.QtCore import QPropertyAnimation, QEasingCurve, QPoint
+from PyQt6.QtGui import QPixmap
+import random
 
 
 def init_moving_around(mascot):
@@ -12,11 +14,12 @@ def start_moving_around(mascot):
     print("start_moving_around")
     if not mascot.is_moving:  # すでに動作中でない場合のみ開始
         mascot.is_moving = True
-        move_left(mascot)
+        random.choice([move_left, move_right, move_down])(mascot)  # ランダムに一つの動作を選択して実行
 
 
 def animate_move(mascot, target_x, target_y, next_move_callback):
     print("animate_move")
+    mascot.label.setPixmap(QPixmap("image/shiro/running_shiro.png"))
     # 以前の接続を解除
     try:
         mascot.movement_animation.finished.disconnect()
@@ -33,22 +36,21 @@ def animate_move(mascot, target_x, target_y, next_move_callback):
 
 
 def move_right(mascot):
-    print("move_right")
     target_x = mascot.screen_width - mascot.width()
     target_y = mascot.y()
-    animate_move(mascot, target_x, target_y, lambda: move_down(mascot))
+    animate_move(mascot, target_x, target_y, lambda: stop_moving_around(mascot))
 
 
 def move_down(mascot):
     target_x = mascot.x()
     target_y = mascot.screen_height - mascot.height()
-    animate_move(mascot, target_x, target_y, lambda: move_left(mascot))
+    animate_move(mascot, target_x, target_y, lambda: stop_moving_around(mascot))
 
 
 def move_left(mascot):
     target_x = 0
     target_y = mascot.y()
-    animate_move(mascot, target_x, target_y, lambda: move_up(mascot))
+    animate_move(mascot, target_x, target_y, lambda: stop_moving_around(mascot))
 
 
 def move_up(mascot):
@@ -60,4 +62,5 @@ def move_up(mascot):
 def stop_moving_around(mascot):
     print("stop_moving_around")
     mascot.is_moving = False  # 動作を停止
+    mascot.label.setPixmap(QPixmap("image/shiro/default_shiro.png"))
 

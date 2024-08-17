@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QMenu
 from src.mascot.talk import auto_talk, talk
+from src.mascot.animation.moving_around import start_moving_around
 from PyQt6.QtGui import QAction
 from PyQt6.QtCore import Qt
 from src.mascot.profile.base import show_level
@@ -52,6 +53,12 @@ def show_context_menu(mascot, position):
     talk_action = QAction("話す", mascot)
     talk_action.triggered.connect(lambda: auto_talk(mascot))
 
+    # 「アニメーション」アクションを作成
+    animation_menu = menu.addMenu("アニメーション")
+    animation_action = QAction("走る", mascot)
+    animation_action.triggered.connect(lambda: start_moving_around(mascot))
+    animation_menu.addAction(animation_action)
+
     # 「つぶやき」サブメニューを作成
     tweet_menu = menu.addMenu("つぶやき")
 
@@ -100,6 +107,7 @@ def add_tweet(mascot):
     if dialog.exec():
         # ダイアログで追加された後の処理（必要なら）
         pass
+
 
 def delete_tweet(mascot, tweet):
     # 確認ダイアログを表示して削除の確認
