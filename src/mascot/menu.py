@@ -9,6 +9,7 @@ from src.dialog.add_tweet_dialog import AddTweetDialog
 from PyQt6.QtWidgets import QMenu, QWidgetAction, QLabel, QWidget, QVBoxLayout, QMessageBox
 from src.dialog.setting_dialog import SettingsDialog
 from src.database.controller.keylogger_setting import set_keylogger_status
+from src.dialog.task_manager_dialog import TaskManagerDialog
 
 
 MENU_STYLE = """
@@ -104,6 +105,11 @@ def show_context_menu(mascot, position):
 
         tweet_menu.addMenu(tweet_sub_menu)
 
+    # 「タスク管理」アクションを追加
+    task_manager_action = QAction("タスク管理", mascot)
+    task_manager_action.triggered.connect(lambda: open_task_manager(mascot))
+    menu.addAction(task_manager_action)
+
     # 「終了」アクションを作成
     quit_action = QAction("終了", mascot)
     quit_action.triggered.connect(mascot.close)
@@ -116,6 +122,9 @@ def show_context_menu(mascot, position):
     # メニューを表示
     menu.exec(mascot.mapToGlobal(position))
 
+def open_task_manager(mascot):
+    dialog = TaskManagerDialog(mascot)
+    dialog.exec()
 
 def toggle_keylogger(mascot, action):
     if action.isChecked():
